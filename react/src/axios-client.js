@@ -2,12 +2,12 @@ import axios from "axios";
 
 const axiosClient = axios.create({
 
-    baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`
+    baseURL: import.meta.env.VITE_API_BASE_URL
 })
 
 axiosClient.interceptors.request.use((config) => {
 
-    const token = localStorage.get('ACCESS_TOKEN');
+    const token = localStorage.getItem('ACCESS_TOKEN');
 
     config.headers.Authorization = `Bearer ${token}`
 
@@ -20,13 +20,16 @@ axiosClient.interceptors.response.use((response) => {
     return response;
 }, (error) => {
 
-    const {response} = error;
+    try {
+        const {response} = error;
 
-    if (response.status === 401) {
-        localStorage.removeItem('ACCESS_TOKEN')
+        if (response.status === 401) {
+            localStorage.removeItem('ACCESS_TOKEN')
+        }
+    } catch (e) {
+        console.error(e);
+        throw e;
     }
-
-    throw error;
 })
 
 export default axiosClient;

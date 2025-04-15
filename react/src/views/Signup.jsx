@@ -5,10 +5,18 @@ import {useStateContext} from "../contexts/ContextProvider.jsx";
 
 export default function Signup() {
 
+
+    const nameRef = useRef(null);
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
+    const passwordConfirmationRef = useRef(null);
+    /*
     const nameRef = useRef();
     const emailRef = useRef();
     const passwordRef = useRef();
     const passwordConfirmationRef = useRef();
+    */
+
 
     const {setUser, setToken} = useStateContext();
 
@@ -16,16 +24,24 @@ export default function Signup() {
         ev.preventDefault();
 
         const payload = {
+
+            name: nameRef.current?.value, // ? null kontrolü ekliyoruz
+            email: emailRef.current?.value,
+            password: passwordRef.current?.value,
+            password_confirmation: passwordConfirmationRef.current?.value,
+            /*
             name: nameRef.current.value,
             email: emailRef.current.value,
             password: passwordRef.current.value,
             password_confirmation: passwordConfirmationRef.current.value,
+
+             */
         }
 
         axiosClient.post("/signup", payload)
             .then(({data}) => {
                 setUser(data.user);
-                setToken(data.user);
+                setToken(data.token);
             })
             .catch(err => {
                 const response = err.response;
